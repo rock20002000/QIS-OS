@@ -1,0 +1,1 @@
+objs-y += board_spec.o uart.o

@@ -1,0 +1,112 @@
+include host_settings.mk
+
+ARCH ?= x86_64
+IS_32BIT ?= n
+MACHINE ?= generic
+
+OUTDIR = temp_dir
+
+KIRK_OUTPUT_IMAGE = $(OUTDIR)/kirk.kef
+
+EXTRABOOT_PATH 	= prebuilt/arm/extraboot.bin
+BSP_PATH		= prebuilt/$(ARCH)/bsp.elf
+KERNEL_PATH		= prebuilt/$(ARCH)/kernel.elf
+
+APP1_PATH		= prebuilt/$(ARCH)/proc.elf
+APP2_PATH		= userspace/build/kirk/$(ARCH)/debug/procHello.elf
+APP3_PATH		= userspace/build/kirk/$(ARCH)/debug/procTest.elf
+APP4_PATH		= userspace/build/kirk/$(ARCH)/debug/testKbdDriver.elf
+APP5_PATH		= userspace/build/kirk/$(ARCH)/debug/testKbdApp.elf
+APP6_PATH		= userspace/build/kirk/$(ARCH)/debug/testSerialDriver.elf
+APP7_PATH		= userspace/build/kirk/$(ARCH)/debug/testSerialApp.elf
+APP8_PATH		= userspace/build/kirk/$(ARCH)/debug/speed.elf
+APP9_PATH		= userspace/build/kirk/$(ARCH)/debug/slicing.elf
+APP10_PATH		= userspace/build/kirk/$(ARCH)/debug/pulse.elf
+APP11_PATH		= userspace/build/kirk/$(ARCH)/debug/mutex_alloc.elf
+APP12_PATH		= userspace/build/kirk/$(ARCH)/debug/mutex.elf
+APP13_PATH		= userspace/build/kirk/$(ARCH)/debug/devnow.elf
+APP14_PATH		= userspace/build/kirk/$(ARCH)/debug/cat.elf
+APP15_PATH		= userspace/build/kirk/$(ARCH)/debug/ls.elf
+APP16_PATH		= userspace/build/kirk/$(ARCH)/debug/msg_server.elf
+APP17_PATH		= userspace/build/kirk/$(ARCH)/debug/msg_client.elf
+APP18_PATH		= userspace/build/kirk/$(ARCH)/debug/msgdeliver_svr.elf
+APP19_PATH		= userspace/build/kirk/$(ARCH)/debug/msgdeliver_clt.elf
+APP20_PATH		= userspace/build/kirk/$(ARCH)/debug/msgAttach_svr.elf
+APP21_PATH		= userspace/build/kirk/$(ARCH)/debug/msgAttach_clt.elf
+APP22_PATH		= userspace/build/kirk/$(ARCH)/debug/pulseAttach.elf
+APP23_PATH		= userspace/build/kirk/$(ARCH)/debug/intrAttachEvt.elf
+APP24_PATH		= userspace/build/kirk/$(ARCH)/debug/cache.elf
+APP25_PATH		= userspace/build/kirk/$(ARCH)/debug/calls.elf
+APP26_PATH		= userspace/build/kirk/$(ARCH)/debug/channel.elf
+APP27_PATH		= userspace/build/kirk/$(ARCH)/debug/devnull_ctrl.elf
+APP28_PATH		= userspace/build/kirk/$(ARCH)/debug/devnull.elf
+APP29_PATH		= userspace/build/kirk/$(ARCH)/debug/devnullr.elf
+APP30_PATH		= userspace/build/kirk/$(ARCH)/debug/malloc.elf
+APP31_PATH		= userspace/build/kirk/$(ARCH)/debug/memperf.elf
+APP32_PATH		= userspace/build/kirk/$(ARCH)/debug/mmap.elf
+APP33_PATH		= userspace/build/kirk/$(ARCH)/debug/msg.elf
+APP34_PATH		= userspace/build/kirk/$(ARCH)/debug/opens.elf
+APP35_PATH		= userspace/build/kirk/$(ARCH)/debug/argc_argv.elf
+APP36_PATH		= userspace/build/kirk/$(ARCH)/debug/create_process.elf
+APP37_PATH		= userspace/build/kirk/$(ARCH)/debug/resmgr_process.elf
+APP38_PATH		= userspace/build/kirk/$(ARCH)/debug/iotest.elf
+APP39_PATH		= userspace/build/kirk/$(ARCH)/debug/ps.elf
+APP40_PATH		= userspace/build/kirk/$(ARCH)/debug/mapio.elf
+
+APP_PROGRAMS	=	$(APP1_PATH),\
+					$(APP2_PATH),$(APP3_PATH),$(APP4_PATH),$(APP5_PATH),$(APP6_PATH),$(APP7_PATH),$(APP8_PATH),$(APP9_PATH),$(APP10_PATH),\
+					$(APP11_PATH),$(APP12_PATH),$(APP13_PATH),$(APP14_PATH),$(APP15_PATH),$(APP16_PATH),$(APP17_PATH),$(APP18_PATH),$(APP19_PATH),\
+					$(APP20_PATH),$(APP21_PATH),$(APP22_PATH),$(APP23_PATH),$(APP24_PATH),$(APP25_PATH),$(APP26_PATH),$(APP27_PATH),$(APP28_PATH),\
+					$(APP29_PATH),$(APP30_PATH),$(APP31_PATH),$(APP32_PATH),$(APP33_PATH),$(APP34_PATH),$(APP35_PATH),$(APP36_PATH),$(APP37_PATH),\
+					$(APP38_PATH),$(APP39_PATH),$(APP40_PATH)
+
+
+APP_PROGRAMS_CMD	= $(shell echo $(APP_PROGRAMS) | sed 's/ //g')
+
+
+
+MKIMG_PATH		= prebuilt/mkimg
+
+ifeq ($(ARCH),arm)
+MACHINE = sabrelite
+IS_32BIT = y
+UBOOT_PATH		= prebuilt/arm/u-boot
+EXTRABOOT_NEW	= $(OUTDIR)/exboot.bin
+ARCH_PRE_CMDS0	= cp $(EXTRABOOT_PATH) $(EXTRABOOT_NEW)
+ARCH_PRE_CMDS1	= 
+EXBOOT_CMD = -e $(EXTRABOOT_NEW)
+QEMU_OPT = qemu-system-arm -M sabrelite -smp 4 -m 1G -display none -serial null -serial mon:stdio -kernel $(UBOOT_PATH) -nic user,tftp=$(OUTDIR)
+else
+MACHINE = generic
+EXBOOT_CMD = 
+HDD_IMAGE_TPLT 	= prebuilt/x86_64/origin_bootable_hdd_kirkipl.img
+HDD_IMG_OUT		= $(OUTDIR)/hdd.img
+ARCH_PRE_CMDS0	= 
+ARCH_PRE_CMDS1 	= cp $(HDD_IMAGE_TPLT) $(HDD_IMG_OUT) && dd conv=notrunc bs=512 if=$(KIRK_OUTPUT_IMAGE) of=$(HDD_IMG_OUT) seek=256 status=none
+qemu_drive_para := -drive id=disk,file=$(HDD_IMG_OUT),if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
+QEMU_OPT = qemu-system-x86_64 -cpu IvyBridge,rdtscp -rtc base=utc $(qemu_drive_para) -smp 1 -m 1024 -serial mon:stdio -vnc localhost:0
+endif
+
+
+compile: clean
+	make -C userspace ARCH=$(ARCH) IS_32BIT=$(IS_32BIT)
+
+build: compile
+	mkdir -p $(OUTDIR)
+	$(ARCH_PRE_CMDS0)
+	$(MKIMG_PATH) $(EXBOOT_CMD) -b $(BSP_PATH) -k $(KERNEL_PATH) -p $(APP_PROGRAMS_CMD) -o $(KIRK_OUTPUT_IMAGE)
+	$(ARCH_PRE_CMDS1)
+
+realboard: build
+	cp $(KIRK_OUTPUT_IMAGE) $(NFS_TFTP_MOUNT_DIR)/kirk_test.kef
+	@sync
+	@echo Success!
+	@echo Try to run make realboard-dbg to connect gdb server!
+
+
+run: 
+	$(QEMU_OPT)
+
+clean:
+	make -C userspace dist-clean
+	rm -rf $(OUTDIR)

@@ -1,0 +1,1 @@
+objs-y += spinlock.o yieldlock.o

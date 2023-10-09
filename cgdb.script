@@ -1,0 +1,5 @@
+
+file bsp/build/bsp.elf.debug
+file kernel/build/kernel.elf.debug
+
+layout asm

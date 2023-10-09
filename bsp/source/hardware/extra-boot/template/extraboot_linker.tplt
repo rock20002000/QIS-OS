@@ -1,0 +1,53 @@
+/* Start of ld file */
+
+ENTRY(_entry);
+
+MEMORY {
+    boot_ram (rwx): ORIGIN = CONFIG_RAM_START, LENGTH = 0x0000040
+    ram (rwx):      ORIGIN = CONFIG_RAM_START + 0x0000040, LENGTH = CONFIG_RAM_END_ADDR - CONFIG_RAM_START - 0x0000040
+}
+
+SECTIONS {
+
+    .boot : {
+        __image_start_addr = .; /* paddr_t */
+        KEEP(*(.boot));
+        . = 0x10;
+        KEEP(*(.magic));
+    } > boot_ram
+
+
+    .text : ALIGN(8) {
+        *(.text);
+        *(.text.*);
+    } > ram
+
+    .rodata : ALIGN(32) {
+        *(.rodata);
+        *(.rodata.*);
+    } > ram
+
+    .data : ALIGN(32) {
+        *(.data);
+        *(.data.*);
+    } > ram
+
+    .bss : ALIGN(32) {
+        __bss = .;
+
+        __boot_stack_base = .;
+        . += 0x1000;
+        __boot_stack_top = .;
+
+        *(.bss);
+        *(.bss.*);
+        __bss_end = .;
+        __eb_image_end = .;
+    } > ram
+
+    /DISCARD/ :{
+        *(*.eh_frame);
+        *(.note.gnu*);
+    }
+
+}

@@ -1,0 +1,5 @@
+build/
+kernel.map
+.vscode/
+kernel/arch/arm/zCaller/build/
+zCaller/vdso.ld

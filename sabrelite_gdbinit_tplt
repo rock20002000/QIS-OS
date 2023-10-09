@@ -1,0 +1,19 @@
+# filename: .gdbinit
+# gdb will read it when starting
+set architecture arm
+target remote CFG_GDB_SVR_IP:CFG_GDB_SVR_PORT
+
+delete
+#b *0x20000000
+
+symbol-file bsp/build/bsp.elf.debug
+
+b start_next 
+
+mon reset
+
+
+c
+
+add-symbol-file kernel/build/kernel.elf.debug
+add-symbol-file bsp/build/extraboot.elf
