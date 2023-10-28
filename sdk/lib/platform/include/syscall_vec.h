@@ -1,0 +1,133 @@
+#ifndef __KIRK_SYSCALL_VECTORS__
+#define __KIRK_SYSCALL_VECTORS__
+
+
+/**** Define syscall vectors here ****/
+
+
+// System call numbers.
+#define SYS_WRITE                   	1
+
+/////////////////////////////////////////////////////////
+
+#define SYSCALL_NR_OPENAT           	2
+#define SYSCALL_NR_CLOSE            	3
+
+#define SYSCALL_NRX_MODULE_LOAD     	17
+#define SYSCALL_MSG_SENDC           	18
+#define SYSCALL_MSG_RECVC           	19
+#define SYSCALL_MSG_REPLYC          	20
+
+
+#define SYSCALL_NR_WAITINTREVENT    	24
+#define SYSCALL_NR_NOTIFYINTREVENT  	25
+#define SYSCALL_NR_YIELD            	26
+#define SYSCALL_NR_SLEEP            	27
+#define SYSCALL_NR_GETSTATE         	28
+
+#define SYSCALL_NR_SCHEDULE				30
+#define SYSCALL_SCHEDULE_NEXT			31
+
+#define SYSCALL_PROCESS_CREATE			33
+#define SYSCALL_PROCESS_DESTROY			34
+
+#define SYSCALL_NR_NANOSLEEP      		37
+
+#define SYSCALL_NR_WRITESCREEN      	39
+
+//	#define SYSCALL_INT_REGISTER 			50
+
+#define SYSCALL_THREAD_CREATE       	50
+#define SYSCALL_THREAD_DESTROY      	51
+#define SYSCALL_THREAD_WAIT       		52
+
+#define SYSCALL_THREAD_CTL       		61
+
+#define SYSCALL_THREAD_GETBLOCKING		71
+#define SYSCALL_THREAD_SETBLOCKING		72
+#define SYSCALL_THREAD_GETCRITICAL		73
+#define SYSCALL_THREAD_SETCRITICAL		74
+#define SYSCALL_THREAD_GETPRIORITY 		75
+#define SYSCALL_THREAD_SETPRIORITY 		76
+
+
+#define SYSCALL_INTERRUPT_ATTACH		80
+#define SYSCALL_INTERRUPT_DETACH		81
+
+#define SYSCALL_INTERRUPT_ATTACH_EVENT	85
+#define SYSCALL_INTERRUPT_DETACH_EVENT	86
+
+
+#define SYSCALL_CLOCK_TIME  			90
+
+#define SYSCALL_TIMER_CREATE  			95
+#define SYSCALL_TIMER_DESTROY  			96
+#define SYSCALL_TIMER_INFO 		 		97
+#define SYSCALL_TIMER_SETTIME  			98
+
+#define SYSCALL_CREATE_CHANNEL      	112
+#define SYSCALL_CONNECT_ATTACH      	113
+#define SYSCALL_DESTROY_CHANNEL     	114
+#define SYSCALL_CONNECT_DETACH      	115
+
+#define SYSCALL_MSG_SENDPULSE      		118
+#define SYSCALL_MSG_RECVPULSE       	119
+
+#define SYSCALL_MSG_DELIVER_EVENT		120
+
+#define SYSCALL_MSG_SENDV           	123
+#define SYSCALL_MSG_RECVV           	124
+#define SYSCALL_MSG_REPLYV          	125
+
+//#define SYSCALL_MSG_ERROR          	129	//	Just Msg Reply with status error
+
+#define SYSCALL_MMAP                	140
+#define SYSCALL_MUNMAP              	141
+#define SYSCALL_MOFFSET              	142
+
+#define SYSCALL_SYNC_CREATE				150
+#define SYSCALL_SYNC_DESTROY			151
+#define SYSCALL_SYNC_CTL				152
+
+
+#define SYSCALL_SEM_WAIT				155
+#define SYSCALL_SEM_POST				156
+
+#define SYSCALL_CONDVAR_WAIT			158
+#define SYSCALL_CONDVAR_SIGNAL			159
+
+
+#define SYSCALL_MUTEX_INIT				162
+#define SYSCALL_MUTEX_LOCK				164
+#define SYSCALL_MUTEX_TRYLOCK			165
+#define SYSCALL_MUTEX_UNLOCK			167
+#define SYSCALL_MUTEX_DESTROY			169
+
+
+#define SYSCALL_INTERRUPT_MASK			170
+#define SYSCALL_INTERRUPT_UNMASK		171
+
+#define SYSCALL_PATHMGR_LINK        	190
+#define SYSCALL_PATHMGR_UNLINK      	191
+#define SYSCALL_PATHMGR_REQ				192
+#define SYSCALL_PATHOBJ_OPEN        	193
+#define SYSCALL_PATHOBJ_CLOSE        	194
+#define SYSCALL_PATHOBJ_CTRL        	195
+
+#define SYSCALL_KER_NOP					197
+
+#define SYSCALL_SEMAPHORE_CREATE        200
+#define SYSCALL_SEMAPHORE_OPEN          201 
+#define SYSCALL_SEMAPHORE_TAKE          202
+#define SYSCALL_SEMAPHORE_POST          203
+#define SYSCALL_SEMAPHORE_DESTROY       204
+#define SYSCALL_SEMAPHORE_CLOSE         205
+#define SYSCALL_SEMAPHORE_SYNCVALUE     206
+
+#define SYSCALL_PLATFORM_ARM_SERIAL_RECV 220
+#define SYSCALL_DEBUGSHOW_MEM            221
+
+
+#define SYSCALL_GET_SYSINFO             254
+
+#endif
